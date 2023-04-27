@@ -31,7 +31,7 @@ public class GridManager : MonoBehaviour
         {
             for (int y = 0; y < _height; y++)
             {
-                Tile randomTile = Random.Range(0f, 6f) < 1.65  ? wallTile : terrailTile;
+                Tile randomTile = Random.Range(0f, 6f) < 1.62  ? wallTile : terrailTile;
                 Tile tile = Instantiate(randomTile, new Vector2(x, y), Quaternion.identity);
 
                 tile.transform.parent = transform;

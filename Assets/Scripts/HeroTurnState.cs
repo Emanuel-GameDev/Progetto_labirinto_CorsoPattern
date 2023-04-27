@@ -116,9 +116,28 @@ public class HeroTurnState : State
         // Controllo item
         CheckItem(dest);
 
+        // Controllo power
+        CheckPower(dest);
+
         // Controllo vittoria
         CheckHeroWin();
 
+    }
+
+    private void CheckPower(Tile dest)
+    {
+        if (dest.occupiedPower != null)
+        {
+            // Setup item su hero
+            dest.occupiedPower.gameObject.SetActive(false);
+
+            // Chiamo effetto Power
+            PubSub.Instance.Notify("PowerPicked", selectedHero);
+
+            // Tolgo item da tile
+            dest.occupiedPower.occupiedTile = null;
+            dest.occupiedPower = null;
+        }
     }
 
     private void CheckItem(Tile dest)

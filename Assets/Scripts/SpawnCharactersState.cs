@@ -59,10 +59,11 @@ public class SpawnCharactersState : State
         for (int i = 0; i < enemyCount; i++)
         {
             BaseEnemy randomPrefab = GetRandomUnit<BaseEnemy>(Faction.Enemy);
-            BaseEnemy spawnedHero = Object.Instantiate(randomPrefab);
+            BaseEnemy spawnedEnemy = Object.Instantiate(randomPrefab);
             Tile randomSpawnTile = gameManager.gridManager.GetEnemyTile();
 
-            randomSpawnTile.SetUnit(spawnedHero);
+            spawnedEnemy.name = "Triangolo malvagio " + i;
+            randomSpawnTile.SetUnit(spawnedEnemy);
         }
     }
 

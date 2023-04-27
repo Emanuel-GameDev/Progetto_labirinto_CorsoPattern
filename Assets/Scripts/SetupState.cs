@@ -7,6 +7,7 @@ public class SetupState : State
     private GameManager gameManager;
 
     private List<ScriptableItem> _items;
+    private List<ScriptablePower> _powers;
 
     public SetupState(GameManager gameManager)
     {
@@ -18,11 +19,38 @@ public class SetupState : State
         // Devo mandare il segnale per l'inizio gioco
         PubSub.Instance.Notify("GameStarted", gameManager);
         gameManager.StateMachine.SetState(GameState.Spawn);
-        SpawnItems();
+        LoadItems();
+        LoadPowers();
 
     }
 
-    private void SpawnItems()
+    private void LoadPowers()
+    {
+        //Prendo ref a poteri
+        _powers = Resources.LoadAll<ScriptablePower>("Powers").ToList();
+
+        Tile prevTile = null;
+        Tile randomTile;
+
+        for (int i = 0; i < _powers.Count; i++)
+        {
+            // Prendo tile random
+            do
+            {
+                randomTile = gameManager.gridManager.GetRandomTile();
+
+            } while (prevTile == randomTile || !randomTile.Walkable || randomTile is GoalTile);
+
+            Power power = _powers[i].powerPrefab;
+            Power spawnedPower = Object.Instantiate(power);
+
+            randomTile.SetPower(spawnedPower);
+
+            prevTile = randomTile;
+        }
+    }
+
+    private void LoadItems()
     {
         // Prendo ref agli item
         _items = Resources.LoadAll<ScriptableItem>("Items").ToList();

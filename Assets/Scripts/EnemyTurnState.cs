@@ -66,6 +66,13 @@ public class EnemyTurnState : State
         // Faccio il turno per ogni enemy
         foreach (BaseEnemy enemy in _enemies)
         {
+            if (enemy.slowCurse > 0)
+            {
+                Debug.Log("Enemy turn skipped" + "  " + "Enemy: " + enemy.name);
+                enemy.slowCurse--;
+                continue;
+            }
+
             // Chiamo funzione per avere tile adiacenti
             Dictionary<Vector2, Tile> adjacentTiles = new Dictionary<Vector2, Tile>();
             adjacentTiles = gameManager.gridManager.GetAdjacentTiles(enemy.occupiedTile);

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -10,6 +11,7 @@ public abstract class Tile : MonoBehaviour
     [SerializeField] bool _isWalkable;
     public BaseUnit occupiedUnit;
     public Item occupiedItem;
+    public Power occupiedPower;
 
     // Controllo che nel tile non ci sia una unit oppure sia erba
     public bool Walkable => _isWalkable && occupiedUnit == null;
@@ -50,6 +52,19 @@ public abstract class Tile : MonoBehaviour
         item.occupiedTile = this;
 
         item.Init();
+    }
+
+    internal void SetPower(Power power)
+    {
+        if (power.occupiedTile != null)
+            power.occupiedTile.occupiedItem = null;
+
+        power.transform.parent = transform;
+        power.transform.position = transform.position;
+        occupiedPower = power;
+        power.occupiedTile = this;
+
+        power.Init();
     }
 
     private void OnMouseDown()
