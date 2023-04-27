@@ -7,6 +7,13 @@ public abstract class Tile : MonoBehaviour
     [SerializeField] protected SpriteRenderer _renderer;
     [SerializeField] GameObject _highlighted;
 
+    [SerializeField] bool _isWalkable;
+    public BaseUnit occupiedUnit;
+    public Item occupiedItem;
+
+    // Controllo che nel tile non ci sia una unit oppure sia erba
+    public bool Walkable => _isWalkable && occupiedUnit == null;
+
     public virtual void Init(int x, int y)
     {
 
@@ -21,4 +28,41 @@ public abstract class Tile : MonoBehaviour
     {
         _highlighted.SetActive(false);
     }
+
+    public void SetUnit(BaseUnit unit)
+    {
+        if (unit.occupiedTile != null)
+            unit.occupiedTile.occupiedUnit = null;
+
+        unit.transform.position = transform.position;
+        occupiedUnit = unit;
+        unit.occupiedTile = this;
+    }
+
+    public void SetItem(Item item)
+    {
+        if(item.occupiedTile != null)
+            item.occupiedTile.occupiedItem = null;
+        
+        item.transform.parent = transform;
+        item.transform.position = transform.position;
+        occupiedItem = item;
+        item.occupiedTile = this;
+
+        item.Init();
+    }
+
+    private void OnMouseDown()
+    {
+        State tmpState = GameManager.instance.StateMachine.GetCurrentState();
+        if (tmpState == null) return;
+
+        if (tmpState is HeroTurnState)
+        {
+            HeroTurnState currentState = (HeroTurnState)tmpState;
+            currentState.PerformTurn(this);
+        }
+
+    }
+
 }
